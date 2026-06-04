@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comitê de People — SMG15</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Paleta Mercado Livre */
+      --ml-yellow:        #FFE600;
+      --ml-yellow-dark:   #F5DA00;
+      --ml-blue:          #3483FA;
+      --ml-blue-dark:     #2968C8;
+      --ml-blue-bg:       #E3EEFE;
+
+      --bg:               #EBEBEB;
+      --surface:          #F5F5F5;
+      --card:             #FFFFFF;
+      --border:           #E0E0E0;
+      --border2:          #BFBFBF;
+
+      --text:             #333333;
+      --text-strong:      #000000DE;
+      --muted:            #666666;
+      --faint:            #999999;
+
+      --status-todo:      #BFBFBF;
+      --status-todo-bg:   #F5F5F5;
+      --status-prog:      #F4B400;
+      --status-prog-bg:   #FFF7DC;
+      --status-done:      #00A650;
+      --status-done-bg:   #E5F6EC;
+
+      --warn:             #F4A100;
+      --warn-bg:          #FFF4E5;
+      --danger:           #F23D4F;
+      --danger-bg:        #FDE5E8;
+
+      --font:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+      --radius:    6px;
+      --radius-lg: 10px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.06);
+      --shadow:    0 2px 8px rgba(0,0,0,.08);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,.18);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--ml-yellow);
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      color: var(--text-strong);
+      letter-spacing: -.01em;
+      font-size: 17px;
+    }
+    .logo-dot {
+      width: 30px;
+      height: 30px;
+      background: var(--text-strong);
+      color: var(--ml-yellow);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .site-tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: rgba(0,0,0,.08);
+      color: var(--text-strong);
+      letter-spacing: .06em;
+      font-weight: 700;
+    }
+    .online-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .online-indicator::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .online-indicator.online {
+      background: rgba(0,166,80,.18);
+      color: #006e36;
+    }
+    .online-indicator.online::before { background: var(--status-done); box-shadow: 0 0 0 2px rgba(0,166,80,.25); }
+    .online-indicator.offline {
+      background: rgba(0,0,0,.1);
+      color: var(--text-strong);
+    }
+    .online-indicator.offline::before { background: var(--muted); }
+
+    .topbar-spacer { flex: 1; }
+
+    /* ── ACTION BAR ── */
+    .actionbar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+    .field-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .field-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+    .select-input, .text-input {
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 7px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .select-input:focus, .text-input:focus {
+      border-color: var(--ml-blue);
+      box-shadow: 0 0 0 3px var(--ml-blue-bg);
+    }
+    .text-input { min-width: 180px; }
+
+    .status-filter {
+      display: flex;
+      gap: 4px;
+      padding: 3px;
+      background: var(--surface);
+      border-radius: var(--radius);
+    }
+    .status-chip {
+      font-family: var(--font);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-chip:hover { color: var(--text-strong); }
+    .status-chip.active { background: var(--card); color: var(--text-strong); box-shadow: var(--shadow-sm); }
+    .status-chip .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .status-chip .dot.todo  { background: var(--status-todo); }
+    .status-chip .dot.prog  { background: var(--status-prog); }
+    .status-chip .dot.done  { background: var(--status-done); }
+
+    .actionbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: var(--ml-blue); color: var(--ml-blue); }
+    .btn.small { padding: 4px 10px; font-size: 11px; }
+    .btn.icon { padding: 6px 8px; }
+    .btn.primary {
+      background: var(--ml-blue);
+      color: #fff;
+      border-color: var(--ml-blue);
+    }
+    .btn.primary:hover { background: var(--ml-blue-dark); border-color: var(--ml-blue-dark); color: #fff; }
+    .btn.yellow {
+      background: var(--ml-yellow);
+      border-color: var(--ml-yellow-dark);
+      color: var(--text-strong);
+    }
+    .btn.yellow:hover { background: var(--ml-yellow-dark); color: var(--text-strong); }
+    .btn.danger { border-color: var(--danger); color: var(--danger); background: #fff; }
+    .btn.danger:hover { background: var(--danger); color: #fff; }
+    .btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+    .btn.ghost:hover { background: var(--surface); color: var(--text-strong); border-color: transparent; }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      background: var(--card);
+      transition: all .15s;
+    }
+    .toggle:hover { border-color: var(--ml-blue); }
+    .toggle.active {
+      background: var(--ml-blue-bg);
+      border-color: var(--ml-blue);
+      color: var(--ml-blue);
+    }
+    .toggle .toggle-dot {
+      width: 28px;
+      height: 16px;
+      background: var(--border2);
+      border-radius: 8px;
+      position: relative;
+      transition: background .15s;
+      flex-shrink: 0;
+    }
+    .toggle .toggle-dot::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 12px; height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      transition: left .15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .toggle.active .toggle-dot { background: var(--ml-blue); }
+    .toggle.active .toggle-dot::after { left: 14px; }
+
+    /* ── PHASE TABS ── */
+    .phase-tabs {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .phase-tab {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 16px 11px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      letter-spacing: .01em;
+    }
+    .phase-tab:hover { color: var(--text-strong); }
+    .phase-tab.active {
+      color: var(--ml-blue);
+      border-bottom-color: var(--ml-blue);
+    }
+    .phase-tab .count {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--surface);
+      color: var(--muted);
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: 0;
+    }
+    .phase-tab.active .count {
+      background: var(--ml-blue-bg);
+      color: var(--ml-blue);
+    }
+
+    /* botão "+ Fase" no final das phase-tabs */
+    .phase-tab-add {
+      color: var(--ml-blue) !important;
+      border-bottom: 3px solid transparent !important;
+      margin-left: 4px;
+      opacity: .85;
+    }
+    .phase-tab-add:hover {
+      background: var(--ml-blue-bg);
+      opacity: 1;
+    }
+
+    /* coluna "+ Adicionar tema" no final do kanban */
+    .add-theme-col {
+      width: 240px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 20px 14px;
+      background: transparent;
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius-lg);
+      min-height: 120px;
+      transition: all .15s;
+    }
+    .add-theme-col:hover {
+      border-color: var(--ml-blue);
+      background: var(--ml-blue-bg);
+    }
+    .btn-add-theme {
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ml-blue);
+      background: var(--card);
+      color: var(--ml-blue);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-add-theme:hover {
+      background: var(--ml-blue);
+      color: #fff;
+    }
+    .add-theme-hint {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ── KANBAN ── */
+    .kanban-wrap {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 16px;
+    }
+    .kanban {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 320px;
+      gap: 14px;
+      height: 100%;
+      align-items: start;
+    }
+    .column {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 60px - 65px - 32px);
+      overflow: hidden;
+    }
+    .column-head {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--card);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .column-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-strong);
+      letter-spacing: -.01em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .column-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: var(--ml-yellow);
+      border-radius: 2px;
+    }
+    .column-count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--surface);
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: .04em;
+    }
+    .column-body {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .column-body::-webkit-scrollbar { width: 6px; }
+    .column-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    .column-add {
+      padding: 9px 14px;
+      background: transparent;
+      border: 1px dashed var(--border2);
+      border-radius: var(--radius);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 8px 10px 10px;
+      transition: all .15s;
+    }
+    .column-add:hover {
+      background: var(--ml-blue-bg);
+      border-color: var(--ml-blue);
+      color: var(--ml-blue);
+    }
+    .column-add.hidden { display: none; }
+
+    /* ── CARD ── */
+    .card-demand {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: box-shadow .15s, border-color .15s, transform .12s;
+      position: relative;
+      border-left: 4px solid var(--status-todo);
+    }
+    .card-demand:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--border2);
+    }
+    .card-demand.status-prog { border-left-color: var(--status-prog); background: var(--status-prog-bg); }
+    .card-demand.status-done {
+      border-left-color: var(--status-done);
+      background: var(--status-done-bg);
+    }
+    .card-demand.status-done .card-title { text-decoration: line-through; opacity: .65; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .card-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid var(--border2);
+      background: var(--card);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      font-size: 11px;
+      color: transparent;
+      font-weight: 700;
+    }
+    .card-checkbox:hover { border-color: var(--ml-blue); }
+    .card-demand.status-prog .card-checkbox { border-color: var(--status-prog); background: #fff; }
+    .card-demand.status-done .card-checkbox {
+      background: var(--status-done);
+      border-color: var(--status-done);
+      color: #fff;
+    }
+    .card-demand.status-done .card-checkbox::after { content: '✓'; }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-strong);
+      line-height: 1.35;
+      flex: 1;
+      word-break: break-word;
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+      align-items: center;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .chip.person {
+      background: var(--ml-blue-bg);
+      color: var(--ml-blue);
+    }
+    .chip.deadline { background: var(--surface); color: var(--muted); }
+    .chip.deadline.late { background: var(--danger-bg); color: var(--danger); }
+    .chip.deadline.today { background: var(--warn-bg); color: var(--warn); }
+    .chip.evidence { background: var(--surface); color: var(--muted); font-style: italic; }
+    .chip svg { width: 11px; height: 11px; }
+
+    .card-status-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .card-status-tag.todo { background: var(--status-todo-bg); color: var(--muted); border: 1px solid var(--border); }
+    .card-status-tag.prog { background: var(--ml-yellow); color: var(--text-strong); }
+    .card-status-tag.done { background: var(--status-done); color: #fff; }
+
+    /* ── EMPTY ── */
+    .col-empty {
+      text-align: center;
+      padding: 20px 10px;
+      color: var(--faint);
+      font-size: 11px;
+      font-style: italic;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+      backdrop-filter: blur(2px);
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      max-width: 560px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .modal h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-strong);
+      letter-spacing: -.01em;
+    }
+    .modal-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .modal-close:hover { color: var(--text-strong); }
+    .form-row { margin-bottom: 14px; }
+    .form-row label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 5px;
+    }
+    .form-row input, .form-row select, .form-row textarea {
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 9px 11px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      width: 100%;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+      border-color: var(--ml-blue);
+      box-shadow: 0 0 0 3px var(--ml-blue-bg);
+    }
+    .form-row textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+    .form-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .form-status {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .form-status-opt {
+      flex: 1;
+      min-width: 100px;
+      padding: 8px;
+      border-radius: var(--radius);
+      border: 2px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--text);
+    }
+    .form-status-opt .dot {
+      width: 9px; height: 9px; border-radius: 50%;
+    }
+    .form-status-opt[data-val="todo"] .dot { background: var(--status-todo); }
+    .form-status-opt[data-val="prog"] .dot { background: var(--status-prog); }
+    .form-status-opt[data-val="done"] .dot { background: var(--status-done); }
+    .form-status-opt.active[data-val="todo"] { border-color: var(--status-todo); background: var(--status-todo-bg); }
+    .form-status-opt.active[data-val="prog"] { border-color: var(--status-prog); background: var(--status-prog-bg); }
+    .form-status-opt.active[data-val="done"] { border-color: var(--status-done); background: var(--status-done-bg); color: var(--status-done); }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .modal-actions-right { display: flex; gap: 8px; }
+
+    /* evidence image upload */
+    .evidence-upload {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .evidence-dropzone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .15s;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .evidence-dropzone:hover {
+      border-color: var(--ml-blue);
+      background: var(--ml-blue-bg);
+      color: var(--ml-blue);
+    }
+    .evidence-dropzone.dragover {
+      border-color: var(--ml-blue);
+      background: var(--ml-blue-bg);
+      color: var(--ml-blue);
+    }
+    .evidence-dropzone .ic { font-size: 18px; display: block; margin-bottom: 4px; }
+    .evidence-preview-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .evidence-thumb {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: zoom-in;
+      flex-shrink: 0;
+    }
+    .evidence-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .evidence-thumb .remove {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.7);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    .evidence-thumb:hover .remove { opacity: 1; }
+    .evidence-thumb .remove:hover { background: var(--danger); }
+
+    /* image viewer (lightbox) */
+    .viewer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 400;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+    .viewer-backdrop.open { display: flex; }
+    .viewer-backdrop img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+    }
+    .viewer-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255,255,255,.1);
+      color: #fff;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .viewer-close:hover { background: rgba(255,255,255,.2); }
+
+    /* card chip de imagem */
+    .chip.has-image { background: var(--ml-blue-bg); color: var(--ml-blue); }
+
+    /* responsibles picker (multi-select chips) */
+    .resp-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      background: var(--card);
+      min-height: 42px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .resp-picker:focus-within,
+    .resp-picker:hover { border-color: var(--ml-blue); }
+    .resp-picker.disabled {
+      pointer-events: none;
+      opacity: .7;
+    }
+    .resp-chip {
+      padding: 5px 11px;
+      border-radius: 14px;
+      border: 1px solid var(--border2);
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all .15s;
+      user-select: none;
+      font-family: var(--font);
+    }
+    .resp-chip:hover {
+      border-color: var(--ml-blue);
+      color: var(--ml-blue);
+      background: var(--ml-blue-bg);
+    }
+    .resp-chip.selected {
+      background: var(--ml-blue);
+      color: #fff;
+      border-color: var(--ml-blue);
+    }
+    .resp-chip.selected::before {
+      content: '✓ ';
+      font-weight: 700;
+    }
+    .resp-picker-hint {
+      font-size: 11px;
+      color: var(--faint);
+      font-style: italic;
+      align-self: center;
+      padding: 0 4px;
+    }
+
+    /* team manager */
+    .team-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; max-height: 320px; overflow-y: auto; }
+    .team-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .team-row input {
+      flex: 1;
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+    }
+    .team-row input:focus { border-color: var(--ml-blue); }
+    .team-add-row {
+      display: flex;
+      gap: 6px;
+    }
+    .team-add-row input {
+      flex: 1;
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      background: var(--card);
+      outline: none;
+    }
+    .team-add-row input:focus { border-color: var(--ml-blue); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text-strong);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 300;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .2s, transform .2s;
+      box-shadow: var(--shadow-lg);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast::before { content: '✓'; font-weight: 700; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.danger { background: var(--danger); }
+    .toast.danger::before { content: '✕'; }
+    .toast.warn { background: var(--warn); }
+    .toast.warn::before { content: '!'; }
+
+    /* progress bar in column */
+    .col-progress {
+      height: 3px;
+      background: var(--border);
+      position: relative;
+    }
+    .col-progress-bar {
+      height: 100%;
+      background: var(--status-done);
+      transition: width .3s;
+    }
+
+    @media (max-width: 720px) {
+      .topbar { padding: 0 12px; gap: 8px; }
+      .logo { font-size: 14px; }
+      .actionbar { padding: 10px 12px; gap: 8px; }
+      .actionbar-right { width: 100%; justify-content: space-between; }
+      .text-input { min-width: 0; flex: 1; }
+      .kanban-wrap { padding: 10px; }
+      .kanban { grid-auto-columns: 280px; }
+      .column { max-height: calc(100vh - 60px - 110px - 20px); }
+      .form-row-2col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">
+      <span class="logo-dot">C</span>
+      COMITÊ DE PEOPLE
+    </div>
+    <div class="site-tag">SMG15</div>
+    <div class="online-indicator offline" id="online-indicator" title="Conectando...">conectando</div>
+    <div class="topbar-spacer"></div>
+  </header>
+
+  <div class="actionbar">
+    <div class="field-group">
+      <span class="field-label">Eu sou</span>
+      <select class="select-input" id="user-select">
+        <option value="">— todos —</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <span class="field-label">Buscar</span>
+      <input type="text" class="text-input" id="search-input" placeholder="título, observação..." />
+    </div>
+    <div class="status-filter" id="status-filter">
+      <button class="status-chip active" data-status="all" type="button">Tudo</button>
+      <button class="status-chip" data-status="todo" type="button"><span class="dot todo"></span>A fazer</button>
+      <button class="status-chip" data-status="prog" type="button"><span class="dot prog"></span>Em andamento</button>
+      <button class="status-chip" data-status="done" type="button"><span class="dot done"></span>Concluído</button>
+    </div>
+
+    <div class="actionbar-right">
+      <label class="toggle" id="toggle-edit">
+        <span>Modo edição</span>
+        <span class="toggle-dot"></span>
+      </label>
+      <button class="btn small" type="button" id="btn-team">👥 Equipe</button>
+      <button class="btn small" type="button" id="btn-export">↓ Exportar</button>
+      <button class="btn small" type="button" id="btn-import">↑ Importar</button>
+      <input type="file" id="file-import" accept="application/json" style="display:none" />
+      <button class="btn small primary" type="button" id="btn-new" disabled title="Ative o modo edição">＋ Nova demanda</button>
+    </div>
+  </div>
+
+  <nav class="phase-tabs" role="tablist" id="phase-tabs"></nav>
+
+  <main class="kanban-wrap">
+    <div class="kanban" id="kanban"></div>
+  </main>
+
+  <!-- MODAL: criar/editar demanda -->
+  <div class="modal-backdrop" id="modal-demand">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="demand-modal-title">Nova demanda</h3>
+        <button class="modal-close" type="button" data-close-modal="modal-demand">×</button>
+      </div>
+      <p class="modal-sub">Preencha os dados da demanda da auditoria.</p>
+
+      <div class="form-row">
+        <label for="dm-title">Título *</label>
+        <input type="text" id="dm-title" placeholder="Ex: Atualizar planilha de treinamento" />
+      </div>
+
+      <div class="form-row-2col">
+        <div class="form-row">
+          <label for="dm-phase">Fase *</label>
+          <select id="dm-phase"></select>
+        </div>
+        <div class="form-row">
+          <label for="dm-theme">Tema *</label>
+          <select id="dm-theme"></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Responsáveis * <span style="font-weight:500;color:var(--faint);text-transform:none;letter-spacing:0">— clique para selecionar (um ou mais)</span></label>
+        <div id="dm-responsibles-picker" class="resp-picker"></div>
+      </div>
+
+      <div class="form-row-2col">
+        <div class="form-row">
+          <label for="dm-deadline">Prazo</label>
+          <input type="date" id="dm-deadline" />
+        </div>
+        <div class="form-row">
+          <label>Status</label>
+          <div class="form-status" id="dm-status">
+            <button type="button" class="form-status-opt active" data-val="todo"><span class="dot"></span>A fazer</button>
+            <button type="button" class="form-status-opt" data-val="prog"><span class="dot"></span>Em andamento</button>
+            <button type="button" class="form-status-opt" data-val="done"><span class="dot"></span>Concluído</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="dm-observation">Observação / evidência</label>
+        <textarea id="dm-observation" placeholder="Comprovante, link, descrição do que foi feito..."></textarea>
+        <div class="evidence-upload">
+          <div class="evidence-dropzone" id="evidence-dropzone">
+            <span class="ic">📷</span>
+            Clique ou arraste imagens aqui para anexar
+            <input type="file" id="evidence-input" accept="image/*" multiple style="display:none" />
+          </div>
+          <div class="evidence-preview-list" id="evidence-preview-list"></div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn danger" type="button" id="dm-delete" style="display:none">🗑 Excluir</button>
+        <div class="modal-actions-right">
+          <button class="btn ghost" type="button" data-close-modal="modal-demand">Cancelar</button>
+          <button class="btn primary" type="button" id="dm-save">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: gerenciar equipe -->
+  <div class="modal-backdrop" id="modal-team">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Gerenciar equipe</h3>
+        <button class="modal-close" type="button" data-close-modal="modal-team">×</button>
+      </div>
+      <p class="modal-sub">Adicione, edite ou remova pessoas que recebem demandas.</p>
+
+      <div class="team-list" id="team-list"></div>
+      <div class="team-add-row">
+        <input type="text" id="team-new-name" placeholder="Nome da pessoa" />
+        <button class="btn primary" type="button" id="team-add-btn">＋ Adicionar</button>
+      </div>
+
+      <div class="modal-actions">
+        <div></div>
+        <div class="modal-actions-right">
+          <button class="btn primary" type="button" data-close-modal="modal-team">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE VIEWER -->
+  <div class="viewer-backdrop" id="image-viewer">
+    <button class="viewer-close" type="button" id="viewer-close">×</button>
+    <img id="viewer-img" alt="" />
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    // ════════════════════════════════════════════════════════════
+    // FIREBASE (Realtime Database)
+    // ════════════════════════════════════════════════════════════
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getDatabase, ref as dbRef, onValue, set as dbSet } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCR-O8PWfKdTANDPnu59DeACPmAN-TrJsI",
+      authDomain: "registrosmg15.firebaseapp.com",
+      databaseURL: "https://registrosmg15-default-rtdb.firebaseio.com",
+      projectId: "registrosmg15",
+      storageBucket: "registrosmg15.firebasestorage.app",
+      messagingSenderId: "353674201769",
+      appId: "1:353674201769:web:14f0e14647e85875b4b7b8"
+    };
+
+    const fbApp = initializeApp(firebaseConfig);
+    const fbDb = getDatabase(fbApp);
+    const fbStoreRef = dbRef(fbDb, 'comite_people');
+    const fbConnectedRef = dbRef(fbDb, '.info/connected');
+    let fbInitialLoad = true;
+    let fbSaveTimer = null;
+
+    // ════════════════════════════════════════════════════════════
+    // CONFIG
+    // ════════════════════════════════════════════════════════════
+    const LEGACY_LOCAL_KEY = 'comite_people_v1';
+
+    // defaults usados quando o store remoto não tem ainda esses campos
+    const DEFAULT_THEMES = [
+      'MANUTENÇÃO',
+      'PEOPLE',
+      'FACILITIES',
+      'ALIMENTAÇÃO',
+      'FRETADO',
+    ];
+    const DEFAULT_PHASES = [
+      { id: 'pre',   label: 'Pré-audit' },
+      { id: 'audit', label: 'Audit' },
+    ];
+    // helpers para acessar com fallback
+    function getThemes() { return (store.themes && store.themes.length) ? store.themes : DEFAULT_THEMES; }
+    function getPhases() { return (store.phases && store.phases.length) ? store.phases : DEFAULT_PHASES; }
+
+    const DEFAULT_TEAM = [
+      'GUILHERME', 'VICTOR', 'CARLOS', 'LEANDRO', 'NATHÁLIA', 'STÉFANI', 'FRANCK'
+    ];
+
+    const STATUS_LABEL = { todo: 'A fazer', prog: 'Em andamento', done: 'Concluído' };
+
+    // ════════════════════════════════════════════════════════════
+    // STORE
+    // ════════════════════════════════════════════════════════════
+    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+    function defaultStore() {
+      return {
+        team: DEFAULT_TEAM.map(name => ({ id: uid(), name })),
+        themes: [...DEFAULT_THEMES],
+        phases: DEFAULT_PHASES.map(p => ({ ...p })),
+        demands: [],
+      };
+    }
+    function normalizeRemote(remote) {
+      if (!remote || typeof remote !== 'object') return defaultStore();
+      // RTDB às vezes devolve arrays como objetos (quando há keys faltantes)
+      let team = remote.team || [];
+      let themes = remote.themes || [];
+      let phases = remote.phases || [];
+      let demands = remote.demands || [];
+      if (team && !Array.isArray(team)) team = Object.values(team);
+      if (themes && !Array.isArray(themes)) themes = Object.values(themes);
+      if (phases && !Array.isArray(phases)) phases = Object.values(phases);
+      if (demands && !Array.isArray(demands)) demands = Object.values(demands);
+      // migrações
+      for (const d of demands) {
+        if (!d.phase) d.phase = 'pre';
+        if (d.theme === 'SHE OPERAÇÃO/EXPEDIÇÃO') d.theme = 'SHE OPERAÇÃO';
+        if (!d.images) d.images = [];
+        // migração: responsibleId (string) → responsibleIds (array)
+        if (!d.responsibleIds) {
+          d.responsibleIds = d.responsibleId ? [d.responsibleId] : [];
+        }
+        if (!Array.isArray(d.responsibleIds)) {
+          d.responsibleIds = Object.values(d.responsibleIds);
+        }
+        delete d.responsibleId;
+      }
+      if (team.length === 0) team = DEFAULT_TEAM.map(name => ({ id: uid(), name }));
+      if (themes.length === 0) themes = [...DEFAULT_THEMES];
+      if (phases.length === 0) phases = DEFAULT_PHASES.map(p => ({ ...p }));
+      return { team, themes, phases, demands };
+    }
+
+    // store inicial vazio (será preenchido pelo listener do RTDB)
+    let store = defaultStore();
+
+    // saveStore: escreve TUDO no RTDB com debounce leve para evitar rajadas
+    function saveStore() {
+      if (fbSaveTimer) clearTimeout(fbSaveTimer);
+      fbSaveTimer = setTimeout(() => {
+        dbSet(fbStoreRef, { team: store.team, demands: store.demands })
+          .catch(err => {
+            console.error('Firebase save error:', err);
+            toast('Erro ao salvar na nuvem: ' + err.message, 'danger');
+          });
+      }, 120);
+    }
+
+    // listener em tempo real
+    function startFirebaseListener() {
+      onValue(fbStoreRef, (snapshot) => {
+        const remote = snapshot.val();
+        const hasRemote = remote && (remote.team || remote.demands);
+        if (hasRemote) {
+          store = normalizeRemote(remote);
+        } else if (fbInitialLoad) {
+          // RTDB vazio na primeira carga → tenta migrar do localStorage
+          const local = localStorage.getItem(LEGACY_LOCAL_KEY);
+          if (local) {
+            try {
+              const parsed = JSON.parse(local);
+              store = normalizeRemote(parsed);
+              dbSet(fbStoreRef, { team: store.team, demands: store.demands })
+                .then(() => {
+                  toast('Dados locais migrados para a nuvem ✓');
+                  // mantemos o localStorage como backup (não removemos)
+                })
+                .catch(err => console.error(err));
+            } catch (e) {
+              store = defaultStore();
+            }
+          } else {
+            store = defaultStore();
+          }
+        }
+        fbInitialLoad = false;
+        renderUserSelect();
+        renderKanban();
+      }, (error) => {
+        console.error('Firebase read error:', error);
+        toast('Erro ao conectar com a nuvem. Verifique sua internet.', 'danger');
+      });
+
+      // indicador online/offline
+      onValue(fbConnectedRef, (snap) => {
+        const online = snap.val() === true;
+        const ind = document.getElementById('online-indicator');
+        if (ind) {
+          ind.classList.toggle('online', online);
+          ind.classList.toggle('offline', !online);
+          ind.textContent = online ? 'online' : 'offline';
+          ind.title = online ? 'Conectado à nuvem · mudanças aparecem para todos em tempo real' : 'Offline — suas mudanças serão sincronizadas ao reconectar';
+        }
+      });
+    }
+
+    // app state
+    const state = {
+      currentPhase: 'pre',
+      currentUserId: '',
+      statusFilter: 'all',
+      search: '',
+      editMode: false,
+      editingDemandId: null,
+      formStatus: 'todo',
+      formImages: [], // array de dataURLs no modal atual
+      formResponsibleIds: [], // array de ids selecionados no modal
+    };
+
+    // limites
+    const MAX_IMAGE_WIDTH = 1200;
+    const IMAGE_QUALITY = 0.8;
+    const MAX_IMAGES_PER_DEMAND = 6;
+
+    // ════════════════════════════════════════════════════════════
+    // UTIL
+    // ════════════════════════════════════════════════════════════
+    function todayISO() {
+      const d = new Date();
+      const tz = d.getTimezoneOffset() * 60000;
+      return new Date(d - tz).toISOString().slice(0, 10);
+    }
+    function escapeHTML(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+    function formatDateShort(iso) {
+      if (!iso) return '';
+      const [, m, d] = iso.split('-');
+      return `${d}/${m}`;
+    }
+    function deadlineState(iso) {
+      if (!iso) return null;
+      const today = todayISO();
+      if (iso < today) return 'late';
+      if (iso === today) return 'today';
+      return 'future';
+    }
+    function toast(msg, kind = 'ok') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast show' + (kind !== 'ok' ? ' ' + kind : '');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 2400);
+    }
+    function findPerson(id) { return store.team.find(p => p.id === id); }
+    function findDemand(id) { return store.demands.find(d => d.id === id); }
+
+    // ════════════════════════════════════════════════════════════
+    // RENDER: USER + TEAM SELECTS
+    // ════════════════════════════════════════════════════════════
+    function renderUserSelect() {
+      const sel = document.getElementById('user-select');
+      const current = sel.value;
+      sel.innerHTML = '<option value="">— todos —</option>' +
+        store.team.map(p => `<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+      sel.value = state.currentUserId || current || '';
+    }
+    function renderResponsiblesPicker() {
+      const picker = document.getElementById('dm-responsibles-picker');
+      if (!picker) return;
+      picker.innerHTML = '';
+      if (store.team.length === 0) {
+        picker.innerHTML = '<span class="resp-picker-hint">equipe vazia — adicione pessoas em "Equipe"</span>';
+        return;
+      }
+      for (const p of store.team) {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        const selected = state.formResponsibleIds.includes(p.id);
+        chip.className = 'resp-chip' + (selected ? ' selected' : '');
+        chip.textContent = p.name;
+        chip.dataset.id = p.id;
+        chip.addEventListener('click', () => {
+          const idx = state.formResponsibleIds.indexOf(p.id);
+          if (idx >= 0) state.formResponsibleIds.splice(idx, 1);
+          else state.formResponsibleIds.push(p.id);
+          chip.classList.toggle('selected');
+        });
+        picker.appendChild(chip);
+      }
+    }
+    function renderThemeSelect() {
+      const sel = document.getElementById('dm-theme');
+      sel.innerHTML = getThemes().map(t => `<option value="${escapeHTML(t)}">${escapeHTML(t)}</option>`).join('');
+    }
+    function renderPhaseSelectInModal() {
+      const sel = document.getElementById('dm-phase');
+      if (!sel) return;
+      const phases = getPhases();
+      sel.innerHTML = phases.map(p => `<option value="${escapeHTML(p.id)}">${escapeHTML(p.label)}</option>`).join('');
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // RENDER: KANBAN
+    // ════════════════════════════════════════════════════════════
+    function demandResponsibleIds(d) {
+      if (Array.isArray(d.responsibleIds)) return d.responsibleIds;
+      if (d.responsibleId) return [d.responsibleId];
+      return [];
+    }
+
+    function filteredDemands() {
+      const q = state.search.trim().toLowerCase();
+      return store.demands.filter(d => {
+        if ((d.phase || 'pre') !== state.currentPhase) return false;
+        if (state.currentUserId && !demandResponsibleIds(d).includes(state.currentUserId)) return false;
+        if (state.statusFilter !== 'all' && d.status !== state.statusFilter) return false;
+        if (q) {
+          const hay = `${d.title} ${d.observation || ''}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderPhaseTabs() {
+      const nav = document.getElementById('phase-tabs');
+      if (!nav) return;
+      const phases = getPhases();
+      // se a fase atual sumiu (foi deletada), volta pra primeira
+      if (!phases.some(p => p.id === state.currentPhase)) {
+        state.currentPhase = phases[0]?.id || 'pre';
+      }
+      // contagem
+      const counts = {};
+      for (const ph of phases) counts[ph.id] = 0;
+      const userFilter = state.currentUserId;
+      for (const d of store.demands) {
+        if (userFilter && !demandResponsibleIds(d).includes(userFilter)) continue;
+        const ph = d.phase || phases[0].id;
+        if (counts[ph] != null) counts[ph]++;
+      }
+      let html = '';
+      for (const ph of phases) {
+        const active = ph.id === state.currentPhase ? 'active' : '';
+        html += `<button class="phase-tab ${active}" type="button" data-phase="${escapeHTML(ph.id)}">${escapeHTML(ph.label)} <span class="count">${counts[ph.id] || 0}</span></button>`;
+      }
+      if (state.editMode) {
+        html += `<button class="phase-tab phase-tab-add" type="button" id="btn-add-phase" title="Adicionar nova fase/aba">＋ Fase</button>`;
+      }
+      nav.innerHTML = html;
+      nav.querySelectorAll('.phase-tab[data-phase]').forEach(t => {
+        t.addEventListener('click', () => {
+          state.currentPhase = t.dataset.phase;
+          renderPhaseTabs();
+          renderKanban();
+        });
+      });
+      const addBtn = document.getElementById('btn-add-phase');
+      if (addBtn) addBtn.addEventListener('click', addPhase);
+    }
+    // alias mantido pra compatibilidade
+    function updatePhaseCounts() { renderPhaseTabs(); }
+
+    function renderKanban() {
+      const kanban = document.getElementById('kanban');
+      const all = filteredDemands();
+      kanban.innerHTML = '';
+      updatePhaseCounts();
+
+      for (const theme of getThemes()) {
+        const list = all.filter(d => d.theme === theme);
+        // contadores totais por tema (sem filtro de status, mas com user/search) pra mostrar progresso real
+        const totalForCount = all.filter(d => d.theme === theme);
+        const doneCount = totalForCount.filter(d => d.status === 'done').length;
+        const totalCount = totalForCount.length;
+        const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+
+        const col = document.createElement('div');
+        col.className = 'column';
+        col.innerHTML = `
+          <div class="column-head">
+            <div class="column-title">${escapeHTML(theme)}</div>
+            <div class="column-count">${doneCount}/${totalCount}</div>
+          </div>
+          <div class="col-progress"><div class="col-progress-bar" style="width:${pct}%"></div></div>
+          <div class="column-body" data-theme="${escapeHTML(theme)}"></div>
+          <button class="column-add ${state.editMode ? '' : 'hidden'}" type="button" data-add-theme="${escapeHTML(theme)}">＋ Adicionar demanda</button>
+        `;
+        kanban.appendChild(col);
+
+        const body = col.querySelector('.column-body');
+        if (list.length === 0) {
+          body.innerHTML = `<div class="col-empty">— nenhuma demanda —</div>`;
+        } else {
+          // ordena: a fazer → em andamento → concluído, depois por prazo asc
+          list.sort((a, b) => {
+            const order = { todo: 0, prog: 1, done: 2 };
+            if (order[a.status] !== order[b.status]) return order[a.status] - order[b.status];
+            const ad = a.deadline || '9999';
+            const bd = b.deadline || '9999';
+            return ad.localeCompare(bd);
+          });
+          for (const d of list) {
+            body.appendChild(renderCard(d));
+          }
+        }
+      }
+
+      // bind add
+      // coluna "+ Adicionar tema" só em modo edição
+      if (state.editMode) {
+        const addCol = document.createElement('div');
+        addCol.className = 'add-theme-col';
+        addCol.innerHTML = `
+          <button class="btn-add-theme" type="button" id="btn-add-theme">＋ Adicionar tema</button>
+          <div class="add-theme-hint">Cria uma nova coluna no kanban</div>
+        `;
+        kanban.appendChild(addCol);
+        addCol.querySelector('#btn-add-theme').addEventListener('click', addTheme);
+      }
+      kanban.querySelectorAll('[data-add-theme]').forEach(btn => {
+        btn.addEventListener('click', () => openDemandModal(null, btn.dataset.addTheme));
+      });
+    }
+
+    function renderCard(d) {
+      const ids = demandResponsibleIds(d);
+      const persons = ids.map(id => findPerson(id)).filter(Boolean);
+      const dlState = deadlineState(d.deadline);
+      const dlClass = dlState === 'late' ? 'late' : (dlState === 'today' ? 'today' : '');
+      const personChip = persons.map(p => `<span class="chip person">@${escapeHTML(p.name)}</span>`).join('');
+      const dlChip = d.deadline ? `<span class="chip deadline ${dlClass}" title="prazo">📅 ${formatDateShort(d.deadline)}</span>` : '';
+      const obsChip = (d.observation && d.observation.trim()) ? `<span class="chip evidence" title="${escapeHTML(d.observation).slice(0,80)}...">📝 nota</span>` : '';
+      const imgCount = (d.images && d.images.length) || 0;
+      const imgChip = imgCount > 0 ? `<span class="chip has-image" title="${imgCount} imagem(ns) anexada(s)">📎 ${imgCount} img</span>` : '';
+      const statusTag = `<span class="card-status-tag ${d.status}">${STATUS_LABEL[d.status]}</span>`;
+
+      const card = document.createElement('div');
+      card.className = `card-demand status-${d.status}`;
+      card.dataset.id = d.id;
+      card.innerHTML = `
+        <div class="card-top">
+          <button class="card-checkbox" data-toggle-id="${d.id}" type="button" title="Marcar como concluído"></button>
+          <div class="card-title">${escapeHTML(d.title)}</div>
+        </div>
+        <div class="card-meta">
+          ${statusTag}
+          ${personChip}
+          ${dlChip}
+          ${obsChip}
+          ${imgChip}
+        </div>
+      `;
+      card.addEventListener('click', e => {
+        if (e.target.closest('[data-toggle-id]')) return;
+        openDemandModal(d.id);
+      });
+      return card;
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // STATUS QUICK TOGGLE
+    // ════════════════════════════════════════════════════════════
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-toggle-id]');
+      if (!btn) return;
+      e.stopPropagation();
+      const d = findDemand(btn.dataset.toggleId);
+      if (!d) return;
+      d.status = d.status === 'done' ? 'todo' : 'done';
+      d.updatedAt = new Date().toISOString();
+      saveStore();
+      renderKanban();
+      toast(d.status === 'done' ? 'Marcado como concluído ✓' : 'Reaberto');
+    });
+
+    // ════════════════════════════════════════════════════════════
+    // MODAL: DEMAND
+    // ════════════════════════════════════════════════════════════
+    function openDemandModal(id, presetTheme) {
+      state.editingDemandId = id;
+      renderThemeSelect();
+      renderPhaseSelectInModal();
+      const isNew = !id;
+      document.getElementById('demand-modal-title').textContent = isNew ? 'Nova demanda' : 'Editar demanda';
+      document.getElementById('dm-delete').style.display = (isNew || !state.editMode) ? 'none' : 'inline-flex';
+
+      if (isNew) {
+        document.getElementById('dm-title').value = '';
+        document.getElementById('dm-phase').value = state.currentPhase;
+        document.getElementById('dm-theme').value = presetTheme || getThemes()[0];
+        state.formResponsibleIds = state.currentUserId ? [state.currentUserId] : [];
+        document.getElementById('dm-deadline').value = '';
+        document.getElementById('dm-observation').value = '';
+        state.formImages = [];
+        setFormStatus('todo');
+      } else {
+        const d = findDemand(id);
+        if (!d) return;
+        document.getElementById('dm-title').value = d.title;
+        document.getElementById('dm-phase').value = d.phase || 'pre';
+        document.getElementById('dm-theme').value = d.theme;
+        state.formResponsibleIds = Array.isArray(d.responsibleIds)
+          ? [...d.responsibleIds]
+          : (d.responsibleId ? [d.responsibleId] : []);
+        document.getElementById('dm-deadline').value = d.deadline || '';
+        document.getElementById('dm-observation').value = d.observation || '';
+        state.formImages = Array.isArray(d.images) ? [...d.images] : [];
+        setFormStatus(d.status);
+      }
+      // se não está em modo edição, fase também é somente leitura
+      document.getElementById('dm-phase').disabled = !state.editMode && !isNew;
+      renderResponsiblesPicker();
+      renderEvidencePreviews();
+
+      // se não está em modo edição, deixa título/tema/responsáveis/prazo somente leitura
+      const readOnly = !state.editMode && !isNew;
+      document.getElementById('dm-title').readOnly = readOnly;
+      document.getElementById('dm-theme').disabled = readOnly;
+      document.getElementById('dm-responsibles-picker').classList.toggle('disabled', readOnly);
+      document.getElementById('dm-deadline').readOnly = readOnly;
+      // se não for o admin: bloqueia criar novo
+      if (isNew && !state.editMode) {
+        toast('Ative o modo edição para criar demandas', 'warn');
+        return;
+      }
+
+      document.getElementById('modal-demand').classList.add('open');
+      setTimeout(() => document.getElementById('dm-title').focus(), 80);
+    }
+    function closeDemandModal() { document.getElementById('modal-demand').classList.remove('open'); }
+
+    function setFormStatus(val) {
+      state.formStatus = val;
+      document.querySelectorAll('#dm-status .form-status-opt').forEach(b => {
+        b.classList.toggle('active', b.dataset.val === val);
+      });
+    }
+    document.querySelectorAll('#dm-status .form-status-opt').forEach(b => {
+      b.addEventListener('click', () => setFormStatus(b.dataset.val));
+    });
+
+    function saveDemand() {
+      const title = document.getElementById('dm-title').value.trim();
+      const phase = document.getElementById('dm-phase').value;
+      const theme = document.getElementById('dm-theme').value;
+      const responsibleIds = [...state.formResponsibleIds];
+      const deadline = document.getElementById('dm-deadline').value || null;
+      const observation = document.getElementById('dm-observation').value;
+      if (!title) { toast('Coloque um título', 'danger'); return; }
+      if (!phase) { toast('Selecione a fase', 'danger'); return; }
+      if (!theme) { toast('Escolha um tema', 'danger'); return; }
+      if (responsibleIds.length === 0) { toast('Selecione ao menos um responsável', 'danger'); return; }
+
+      if (state.editingDemandId) {
+        const d = findDemand(state.editingDemandId);
+        if (d) {
+          d.title = title;
+          d.phase = phase;
+          d.theme = theme;
+          d.responsibleIds = responsibleIds;
+          delete d.responsibleId;
+          d.deadline = deadline;
+          d.observation = observation;
+          d.images = [...state.formImages];
+          d.status = state.formStatus;
+          d.updatedAt = new Date().toISOString();
+        }
+        toast('Demanda atualizada');
+      } else {
+        store.demands.push({
+          id: uid(),
+          phase,
+          title, theme, responsibleIds, deadline, observation,
+          images: [...state.formImages],
+          status: state.formStatus,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+        toast('Demanda criada');
+      }
+      saveStore();
+      renderKanban();
+      closeDemandModal();
+    }
+
+    function deleteDemand() {
+      if (!state.editingDemandId) return;
+      const d = findDemand(state.editingDemandId);
+      if (!d) return;
+      if (!confirm(`Excluir a demanda "${d.title}"? Esta ação não pode ser desfeita.`)) return;
+      store.demands = store.demands.filter(x => x.id !== d.id);
+      saveStore();
+      renderKanban();
+      closeDemandModal();
+      toast('Demanda excluída', 'warn');
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // EVIDENCE: IMAGENS
+    // ════════════════════════════════════════════════════════════
+    function renderEvidencePreviews() {
+      const list = document.getElementById('evidence-preview-list');
+      if (!list) return;
+      list.innerHTML = '';
+      state.formImages.forEach((dataURL, idx) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'evidence-thumb';
+        thumb.innerHTML = `
+          <img src="${dataURL}" alt="evidência ${idx + 1}" data-view-img="${idx}" />
+          <button class="remove" type="button" data-remove-img="${idx}" title="Remover">×</button>
+        `;
+        list.appendChild(thumb);
+      });
+      list.querySelectorAll('[data-view-img]').forEach(img => {
+        img.addEventListener('click', () => openImageViewer(state.formImages[+img.dataset.viewImg]));
+      });
+      list.querySelectorAll('[data-remove-img]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const idx = +btn.dataset.removeImg;
+          state.formImages.splice(idx, 1);
+          renderEvidencePreviews();
+        });
+      });
+    }
+
+    function resizeImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Erro ao ler arquivo'));
+        reader.onload = e => {
+          const img = new Image();
+          img.onerror = () => reject(new Error('Erro ao carregar imagem'));
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > MAX_IMAGE_WIDTH) {
+              height = Math.round(height * (MAX_IMAGE_WIDTH / width));
+              width = MAX_IMAGE_WIDTH;
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            // tenta JPEG (melhor compressão); PNG fica grande
+            const dataURL = canvas.toDataURL('image/jpeg', IMAGE_QUALITY);
+            resolve(dataURL);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleEvidenceFiles(fileList) {
+      const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+      if (files.length === 0) {
+        toast('Selecione apenas imagens', 'warn');
+        return;
+      }
+      const remaining = MAX_IMAGES_PER_DEMAND - state.formImages.length;
+      if (remaining <= 0) {
+        toast(`Máximo ${MAX_IMAGES_PER_DEMAND} imagens por demanda`, 'warn');
+        return;
+      }
+      const toProcess = files.slice(0, remaining);
+      let added = 0;
+      for (const file of toProcess) {
+        try {
+          const dataURL = await resizeImage(file);
+          state.formImages.push(dataURL);
+          added++;
+        } catch (err) {
+          toast('Erro em uma imagem: ' + err.message, 'danger');
+        }
+      }
+      renderEvidencePreviews();
+      if (added > 0) toast(`${added} imagem(ns) anexada(s)`);
+      if (files.length > remaining) toast(`${files.length - remaining} ignorada(s) — limite atingido`, 'warn');
+    }
+
+    function openImageViewer(dataURL) {
+      document.getElementById('viewer-img').src = dataURL;
+      document.getElementById('image-viewer').classList.add('open');
+    }
+    function closeImageViewer() {
+      document.getElementById('image-viewer').classList.remove('open');
+      document.getElementById('viewer-img').src = '';
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // MODAL: TEAM
+    // ════════════════════════════════════════════════════════════
+    function openTeamModal() {
+      renderTeamList();
+      document.getElementById('modal-team').classList.add('open');
+    }
+    function closeTeamModal() { document.getElementById('modal-team').classList.remove('open'); }
+
+    function renderTeamList() {
+      const list = document.getElementById('team-list');
+      if (store.team.length === 0) {
+        list.innerHTML = '<div class="col-empty">— equipe vazia, adicione alguém abaixo —</div>';
+        return;
+      }
+      list.innerHTML = '';
+      for (const p of store.team) {
+        const row = document.createElement('div');
+        row.className = 'team-row';
+        row.innerHTML = `
+          <input type="text" value="${escapeHTML(p.name)}" data-team-edit="${p.id}" />
+          <button class="btn small danger" type="button" data-team-del="${p.id}">Remover</button>
+        `;
+        list.appendChild(row);
+      }
+      list.querySelectorAll('[data-team-edit]').forEach(inp => {
+        inp.addEventListener('change', () => {
+          const p = store.team.find(x => x.id === inp.dataset.teamEdit);
+          if (p) {
+            p.name = inp.value.trim() || p.name;
+            saveStore();
+            renderUserSelect();
+            renderKanban();
+          }
+        });
+      });
+      list.querySelectorAll('[data-team-del]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.teamDel;
+          const p = store.team.find(x => x.id === id);
+          if (!p) return;
+          const using = store.demands.filter(d => demandResponsibleIds(d).includes(id));
+          let confirmMsg = `Remover "${p.name}" da equipe?`;
+          if (using.length > 0) confirmMsg += `\n\nEssa pessoa é responsável por ${using.length} demanda(s) — será removida da lista de responsáveis dessas demandas (as outras pessoas atribuídas continuam).`;
+          if (!confirm(confirmMsg)) return;
+          store.team = store.team.filter(x => x.id !== id);
+          // remove referência das demandas
+          for (const d of store.demands) {
+            if (Array.isArray(d.responsibleIds)) {
+              d.responsibleIds = d.responsibleIds.filter(rid => rid !== id);
+            }
+            if (d.responsibleId === id) delete d.responsibleId;
+          }
+          if (state.currentUserId === id) {
+            state.currentUserId = '';
+            document.getElementById('user-select').value = '';
+          }
+          saveStore();
+          renderUserSelect();
+          renderTeamList();
+          renderKanban();
+        });
+      });
+    }
+    function addTeamMember() {
+      const input = document.getElementById('team-new-name');
+      const name = input.value.trim();
+      if (!name) { toast('Digite um nome', 'warn'); return; }
+      store.team.push({ id: uid(), name });
+      input.value = '';
+      saveStore();
+      renderUserSelect();
+      renderTeamList();
+      renderKanban();
+      toast(`Adicionado: ${name}`);
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // TEMA / FASE (criação via UI)
+    // ════════════════════════════════════════════════════════════
+    function addTheme() {
+      const raw = prompt('Nome do novo tema (vira uma nova coluna do kanban):');
+      if (raw == null) return;
+      const name = raw.trim().toUpperCase();
+      if (!name) { toast('Nome vazio', 'warn'); return; }
+      if (!store.themes) store.themes = [...DEFAULT_THEMES];
+      if (store.themes.includes(name)) { toast('Esse tema já existe', 'warn'); return; }
+      store.themes.push(name);
+      saveStore();
+      renderKanban();
+      toast(`Tema "${name}" adicionado`);
+    }
+    function addPhase() {
+      const raw = prompt('Nome da nova fase/aba (ex: "Pós-audit"):');
+      if (raw == null) return;
+      const label = raw.trim();
+      if (!label) { toast('Nome vazio', 'warn'); return; }
+      // id curto, sem acentos, alfanumérico
+      // remove acentos e mantém só [a-z0-9]
+      let id = label.toLowerCase().normalize('NFD');
+      id = Array.from(id).filter(c => {
+        const cc = c.charCodeAt(0);
+        return cc < 0x0300 || cc > 0x036F;
+      }).join('').replace(/[^a-z0-9]/g, '').slice(0, 16);
+      if (!id) id = 'fase' + Date.now().toString(36);
+      if (!store.phases) store.phases = DEFAULT_PHASES.map(p => ({ ...p }));
+      if (store.phases.some(p => p.id === id || p.label.toLowerCase() === label.toLowerCase())) {
+        toast('Essa fase já existe', 'warn'); return;
+      }
+      store.phases.push({ id, label });
+      saveStore();
+      state.currentPhase = id; // pula direto pra nova fase
+      renderPhaseTabs();
+      renderKanban();
+      toast(`Fase "${label}" adicionada`);
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // IMPORT / EXPORT
+    // ════════════════════════════════════════════════════════════
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `auditoria-smg15-${todayISO()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('Backup exportado');
+    }
+    function importJSON(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed.demands || !parsed.team) throw new Error('Formato inválido');
+          if (!confirm(`Importar ${parsed.demands.length} demanda(s) e ${parsed.team.length} membro(s)? Isso vai SUBSTITUIR seus dados atuais.`)) return;
+          store = parsed;
+          saveStore();
+          renderUserSelect();
+          renderKanban();
+          toast('Importado com sucesso');
+        } catch (err) {
+          toast('Erro ao importar: ' + err.message, 'danger');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // EDIT MODE
+    // ════════════════════════════════════════════════════════════
+    function setEditMode(on) {
+      state.editMode = on;
+      document.getElementById('toggle-edit').classList.toggle('active', on);
+      document.getElementById('btn-new').disabled = !on;
+      document.getElementById('btn-new').title = on ? '' : 'Ative o modo edição';
+      renderPhaseTabs();
+      renderKanban();
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // BOOT
+    // ════════════════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', () => {
+      // render inicial vazio enquanto o RTDB carrega
+      renderUserSelect();
+      renderPhaseTabs();
+      renderKanban();
+      // conecta ao Realtime Database (vai re-renderizar quando os dados chegarem)
+      startFirebaseListener();
+
+      document.getElementById('user-select').addEventListener('change', e => {
+        state.currentUserId = e.target.value;
+        renderKanban();
+      });
+      document.getElementById('search-input').addEventListener('input', e => {
+        state.search = e.target.value;
+        renderKanban();
+      });
+      document.querySelectorAll('#status-filter .status-chip').forEach(c => {
+        c.addEventListener('click', () => {
+          state.statusFilter = c.dataset.status;
+          document.querySelectorAll('#status-filter .status-chip').forEach(x => x.classList.toggle('active', x === c));
+          renderKanban();
+        });
+      });
+      document.getElementById('toggle-edit').addEventListener('click', () => setEditMode(!state.editMode));
+      document.getElementById('btn-new').addEventListener('click', () => {
+        if (!state.editMode) { toast('Ative o modo edição', 'warn'); return; }
+        openDemandModal(null);
+      });
+      document.getElementById('btn-team').addEventListener('click', openTeamModal);
+      document.getElementById('btn-export').addEventListener('click', exportJSON);
+      document.getElementById('btn-import').addEventListener('click', () => document.getElementById('file-import').click());
+      document.getElementById('file-import').addEventListener('change', e => {
+        if (e.target.files[0]) importJSON(e.target.files[0]);
+        e.target.value = '';
+      });
+
+      // demand modal
+      document.getElementById('dm-save').addEventListener('click', saveDemand);
+      document.getElementById('dm-delete').addEventListener('click', deleteDemand);
+
+      // team modal
+      document.getElementById('team-add-btn').addEventListener('click', addTeamMember);
+      document.getElementById('team-new-name').addEventListener('keydown', e => {
+        if (e.key === 'Enter') addTeamMember();
+      });
+
+      // evidence upload
+      const dropzone = document.getElementById('evidence-dropzone');
+      const evidenceInput = document.getElementById('evidence-input');
+      dropzone.addEventListener('click', () => evidenceInput.click());
+      evidenceInput.addEventListener('change', e => {
+        if (e.target.files && e.target.files.length) handleEvidenceFiles(e.target.files);
+        e.target.value = '';
+      });
+      dropzone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+      dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+      dropzone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) handleEvidenceFiles(e.dataTransfer.files);
+      });
+      // colar imagem (Ctrl+V) dentro do modal
+      document.getElementById('modal-demand').addEventListener('paste', e => {
+        const items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        const files = [];
+        for (const it of items) {
+          if (it.kind === 'file' && it.type.startsWith('image/')) {
+            files.push(it.getAsFile());
+          }
+        }
+        if (files.length > 0) {
+          e.preventDefault();
+          handleEvidenceFiles(files);
+        }
+      });
+
+      // image viewer
+      document.getElementById('viewer-close').addEventListener('click', closeImageViewer);
+      document.getElementById('image-viewer').addEventListener('click', e => {
+        if (e.target.id === 'image-viewer') closeImageViewer();
+      });
+
+      // close modals
+      document.querySelectorAll('[data-close-modal]').forEach(b => {
+        b.addEventListener('click', () => document.getElementById(b.dataset.closeModal).classList.remove('open'));
+      });
+      document.querySelectorAll('.modal-backdrop').forEach(bd => {
+        bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('open'); });
+      });
+
+      window.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          if (document.getElementById('image-viewer').classList.contains('open')) {
+            closeImageViewer();
+            return;
+          }
+          document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          if (document.getElementById('modal-demand').classList.contains('open')) saveDemand();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
