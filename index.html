@@ -1227,7 +1227,12 @@
     function saveStore() {
       if (fbSaveTimer) clearTimeout(fbSaveTimer);
       fbSaveTimer = setTimeout(() => {
-        dbSet(fbStoreRef, { team: store.team, demands: store.demands })
+        dbSet(fbStoreRef, {
+          team: store.team,
+          themes: store.themes,
+          phases: store.phases,
+          demands: store.demands,
+        })
           .catch(err => {
             console.error('Firebase save error:', err);
             toast('Erro ao salvar na nuvem: ' + err.message, 'danger');
