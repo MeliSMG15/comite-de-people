@@ -1164,8 +1164,7 @@
       'FRETADO',
     ];
     const DEFAULT_PHASES = [
-      { id: 'pre',   label: 'Pré-audit' },
-      { id: 'audit', label: 'Audit' },
+      { id: 'comite', label: 'Comitê' },
     ];
     // helpers para acessar com fallback
     function getThemes() { return (store.themes && store.themes.length) ? store.themes : DEFAULT_THEMES; }
@@ -1286,7 +1285,7 @@
 
     // app state
     const state = {
-      currentPhase: 'pre',
+      currentPhase: 'comite',
       currentUserId: '',
       statusFilter: 'all',
       search: '',
