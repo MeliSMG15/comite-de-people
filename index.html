@@ -482,6 +482,51 @@
     }
     .column-add.hidden { display: none; }
 
+    /* X para excluir tema (coluna) */
+    .column-head-right { display: flex; align-items: center; gap: 6px; }
+    .column-delete {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: all .15s;
+    }
+    .column-delete:hover {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+
+    /* X para excluir fase (aba) */
+    .phase-tab-delete {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1;
+      margin-left: 4px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .phase-tab-delete:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
     /* ── CARD ── */
     .card-demand {
       background: var(--card);
@@ -1457,19 +1502,30 @@
         if (counts[ph] != null) counts[ph]++;
       }
       let html = '';
+      const canDeletePhase = state.editMode && phases.length > 1;
       for (const ph of phases) {
         const active = ph.id === state.currentPhase ? 'active' : '';
-        html += `<button class="phase-tab ${active}" type="button" data-phase="${escapeHTML(ph.id)}">${escapeHTML(ph.label)} <span class="count">${counts[ph.id] || 0}</span></button>`;
+        const delX = canDeletePhase
+          ? ` <span class="phase-tab-delete" data-delete-phase="${escapeHTML(ph.id)}" title="Excluir fase">×</span>`
+          : '';
+        html += `<button class="phase-tab ${active}" type="button" data-phase="${escapeHTML(ph.id)}">${escapeHTML(ph.label)} <span class="count">${counts[ph.id] || 0}</span>${delX}</button>`;
       }
       if (state.editMode) {
         html += `<button class="phase-tab phase-tab-add" type="button" id="btn-add-phase" title="Adicionar nova fase/aba">＋ Fase</button>`;
       }
       nav.innerHTML = html;
       nav.querySelectorAll('.phase-tab[data-phase]').forEach(t => {
-        t.addEventListener('click', () => {
+        t.addEventListener('click', e => {
+          if (e.target.closest('[data-delete-phase]')) return;
           state.currentPhase = t.dataset.phase;
           renderPhaseTabs();
           renderKanban();
+        });
+      });
+      nav.querySelectorAll('[data-delete-phase]').forEach(x => {
+        x.addEventListener('click', e => {
+          e.stopPropagation();
+          deletePhase(x.dataset.deletePhase);
         });
       });
       const addBtn = document.getElementById('btn-add-phase');
@@ -1494,10 +1550,17 @@
 
         const col = document.createElement('div');
         col.className = 'column';
+        const showThemeDelete = state.editMode && getThemes().length > 1;
+        const themeDeleteBtn = showThemeDelete
+          ? `<button class="column-delete" data-delete-theme="${escapeHTML(theme)}" type="button" title="Excluir tema">×</button>`
+          : '';
         col.innerHTML = `
           <div class="column-head">
             <div class="column-title">${escapeHTML(theme)}</div>
-            <div class="column-count">${doneCount}/${totalCount}</div>
+            <div class="column-head-right">
+              <div class="column-count">${doneCount}/${totalCount}</div>
+              ${themeDeleteBtn}
+            </div>
           </div>
           <div class="col-progress"><div class="col-progress-bar" style="width:${pct}%"></div></div>
           <div class="column-body" data-theme="${escapeHTML(theme)}"></div>
@@ -1537,6 +1600,12 @@
       }
       kanban.querySelectorAll('[data-add-theme]').forEach(btn => {
         btn.addEventListener('click', () => openDemandModal(null, btn.dataset.addTheme));
+      });
+      kanban.querySelectorAll('[data-delete-theme]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          deleteTheme(btn.dataset.deleteTheme);
+        });
       });
     }
 
@@ -1943,6 +2012,45 @@
       renderPhaseTabs();
       renderKanban();
       toast(`Fase "${label}" adicionada`);
+    }
+
+    function deleteTheme(themeName) {
+      const themes = getThemes();
+      if (themes.length <= 1) { toast('Não pode excluir o último tema', 'warn'); return; }
+      if (!themes.includes(themeName)) return;
+      const demandsInTheme = store.demands.filter(d => d.theme === themeName);
+      let msg = `Excluir o tema "${themeName}"?`;
+      if (demandsInTheme.length > 0) {
+        msg = `O tema "${themeName}" tem ${demandsInTheme.length} demanda(s). Excluir o tema também vai REMOVER essas demandas. Continuar?`;
+      }
+      if (!confirm(msg)) return;
+      store.demands = store.demands.filter(d => d.theme !== themeName);
+      store.themes = themes.filter(t => t !== themeName);
+      saveStore();
+      renderKanban();
+      toast(`Tema "${themeName}" excluído`, 'warn');
+    }
+
+    function deletePhase(phaseId) {
+      const phases = getPhases();
+      if (phases.length <= 1) { toast('Não pode excluir a última fase', 'warn'); return; }
+      const phase = phases.find(p => p.id === phaseId);
+      if (!phase) return;
+      const demandsInPhase = store.demands.filter(d => (d.phase || phases[0].id) === phaseId);
+      let msg = `Excluir a fase "${phase.label}"?`;
+      if (demandsInPhase.length > 0) {
+        msg = `A fase "${phase.label}" tem ${demandsInPhase.length} demanda(s). Excluir a fase também vai REMOVER essas demandas. Continuar?`;
+      }
+      if (!confirm(msg)) return;
+      store.demands = store.demands.filter(d => (d.phase || phases[0].id) !== phaseId);
+      store.phases = phases.filter(p => p.id !== phaseId);
+      if (state.currentPhase === phaseId) {
+        state.currentPhase = store.phases[0].id;
+      }
+      saveStore();
+      renderPhaseTabs();
+      renderKanban();
+      toast(`Fase "${phase.label}" excluída`, 'warn');
     }
 
     // ════════════════════════════════════════════════════════════
