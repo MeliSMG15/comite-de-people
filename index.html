@@ -536,6 +536,36 @@
       color: #fff;
     }
     .card-demand.status-done .card-checkbox::after { content: '✓'; }
+
+    /* Botão excluir card (X) — só aparece em modo edição, no hover */
+    .card-delete {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all .15s;
+      z-index: 2;
+      padding: 0;
+    }
+    .card-demand:hover .card-delete { opacity: .85; }
+    .card-delete:hover {
+      opacity: 1 !important;
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
     .card-title {
       font-size: 13px;
       font-weight: 600;
@@ -1525,7 +1555,11 @@
       const card = document.createElement('div');
       card.className = `card-demand status-${d.status}`;
       card.dataset.id = d.id;
+      const deleteBtn = state.editMode
+        ? `<button class="card-delete" data-delete-id="${d.id}" type="button" title="Excluir demanda">×</button>`
+        : '';
       card.innerHTML = `
+        ${deleteBtn}
         <div class="card-top">
           <button class="card-checkbox" data-toggle-id="${d.id}" type="button" title="Marcar como concluído"></button>
           <div class="card-title">${escapeHTML(d.title)}</div>
@@ -1540,6 +1574,7 @@
       `;
       card.addEventListener('click', e => {
         if (e.target.closest('[data-toggle-id]')) return;
+        if (e.target.closest('[data-delete-id]')) return;
         openDemandModal(d.id);
       });
       return card;
@@ -1559,6 +1594,23 @@
       saveStore();
       renderKanban();
       toast(d.status === 'done' ? 'Marcado como concluído ✓' : 'Reaberto');
+    });
+
+    // ════════════════════════════════════════════════════════════
+    // EXCLUIR CARD (botão X)
+    // ════════════════════════════════════════════════════════════
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-delete-id]');
+      if (!btn) return;
+      e.stopPropagation();
+      if (!state.editMode) return;
+      const d = findDemand(btn.dataset.deleteId);
+      if (!d) return;
+      if (!confirm(`Excluir a demanda "${d.title}"? Esta ação não pode ser desfeita.`)) return;
+      store.demands = store.demands.filter(x => x.id !== d.id);
+      saveStore();
+      renderKanban();
+      toast('Demanda excluída', 'warn');
     });
 
     // ════════════════════════════════════════════════════════════
